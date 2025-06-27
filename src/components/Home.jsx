@@ -17,14 +17,14 @@ const Home = () => {
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link
-            to="/ask-doubt"
+            to="/private/ask-doubt"
             className="px-6 py-3 rounded-full border-2 border-blue-600 text-blue-600 font-semibold hover:bg-blue-50 transition"
           >
             SOLVE DOUBTS WITH AI 💬
           </Link>
 
           <Link
-            to="/private/user-dash"
+            to="/private/quiz-list"
             className="relative px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-gray-900 text-white font-semibold shadow-md hover:opacity-90 transition flex flex-col items-center"
           >
             <span className="absolute -top-2 text-[10px] bg-yellow-400 text-black font-bold px-2 py-0.5 rounded-full shadow-sm">

@@ -1,7 +1,13 @@
+import { getUser } from "../auth";
 import { myAxios } from "./helper"
 
 export const getAnswer=(question)=>{
-    return myAxios.post('/api/ai',question)
+    let user=getUser();
+    let data={
+        email:user?.email,
+        question:question
+    }
+    return myAxios.post('/api/ai',data)
     .then((response)=>response.data);
 }
 

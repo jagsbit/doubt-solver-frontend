@@ -54,7 +54,7 @@ const AskDoubt = () => {
     }
   }, [isLoggedIn]);
 
-  const isAnswerEmpty = !answer || answer.trim() === "" || answer==="Your doubt is not related to Academics";
+  const isAnswerEmpty = !answer || answer.trim() === "" || answer==="Your doubt is not related to Academics" || answer=="You’ve exceeded your free usage limit for today. Please upgrade to a standard subscription to continue.";
 
   return (
     <div className="p-6 max-w-3xl mx-auto">

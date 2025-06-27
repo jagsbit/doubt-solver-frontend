@@ -12,10 +12,14 @@ const Register = () => {
     institution: "",
   });
 
-  
   const [enteredOtp, setEnteredOtp] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+
   const [error, setError] = useState({
     errors: {},
     isError: false,
@@ -29,7 +33,8 @@ const Register = () => {
   };
 
   const sendOtp = () => {
-     sendEmail(formData.email)
+    setIsSendingOtp(true);
+    sendEmail(formData.email)
       .then((data) => {
         toast.success(data);
         setIsOtpSent(true);
@@ -37,48 +42,40 @@ const Register = () => {
       .catch((error) => {
         console.error(error);
         toast.error("Failed to send OTP");
-      });
+      })
+      .finally(() => setIsSendingOtp(false));
   };
 
-   
-
   const verifyOtp = () => {
-    verifyEmail(formData.email,enteredOtp)
-    .then((data)=>{
-         if(data==='Email verified successfully!'){
-               setIsOtpVerified(true)
-               toast.success(data)
-         }
-            
-         else
-              toast.error(data)
-    })
-    .catch((error)=>{
-        console.log(error)
-        toast.error("Failed to verify")
-    })
+    setIsVerifyingOtp(true);
+    verifyEmail(formData.email, enteredOtp)
+      .then((data) => {
+        if (data === "Email verified successfully!") {
+          setIsOtpVerified(true);
+          toast.success(data);
+        } else toast.error(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to verify");
+      })
+      .finally(() => setIsVerifyingOtp(false));
   };
 
   const handleSubmit = (e) => {
-     e.preventDefault();
-
+    e.preventDefault();
     if (!isOtpVerified) {
       toast.error("Please verify the OTP before registering.");
       return;
     }
+
+    setIsLoading(true);
+
     signup(formData)
       .then((response) => {
         toast.success("Registration Successful!");
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          institution: "",
-        });
-        setError({
-          errors: {},
-          isError: false,
-        });
+        setFormData({ name: "", email: "", password: "", institution: "" });
+        setError({ errors: {}, isError: false });
         setEnteredOtp("");
         setIsOtpSent(false);
         setIsOtpVerified(false);
@@ -86,10 +83,10 @@ const Register = () => {
       .catch((error) => {
         console.error("Error during registration:", error);
         toast.error("Registration failed. Please try again.");
-        setError({
-          errors: error,
-          isError: true,
-        });
+        setError({ errors: error, isError: true });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -135,9 +132,14 @@ const Register = () => {
             <button
               type="button"
               onClick={sendOtp}
-              className="mt-2 text-sm text-blue-500 hover:underline"
+              disabled={isSendingOtp} // prevent double clicks
+              className="mt-2 text-sm text-blue-500 hover:underline disabled:opacity-50 flex items-center"
             >
-              Send OTP
+              {isSendingOtp ? (
+                <div className="animate-spin h-4 w-4 border-2 border-t-transparent border-blue-500 rounded-full"></div>
+              ) : (
+                "Send OTP"
+              )}
             </button>
           </div>
 
@@ -156,9 +158,14 @@ const Register = () => {
               <button
                 type="button"
                 onClick={verifyOtp}
-                className="mt-2 text-sm text-green-600 hover:underline"
+                disabled={isVerifyingOtp} // prevent double clicks
+                className="mt-2 text-sm text-green-600 hover:underline disabled:opacity-50 flex items-center"
               >
-                Verify OTP
+                {isVerifyingOtp ? (
+                  <div className="animate-spin h-4 w-4 border-2 border-t-transparent border-green-600 rounded-full"></div>
+                ) : (
+                  "Verify OTP"
+                )}
               </button>
             </div>
           )}
@@ -206,14 +213,18 @@ const Register = () => {
           {/* Register Button */}
           <button
             type="submit"
-            disabled={!isOtpVerified}
-            className={`w-full py-2 rounded-md transition ${
-              isOtpVerified
+            disabled={!isOtpVerified || isLoading}
+            className={`w-full py-2 rounded-md transition flex items-center justify-center ${
+              isOtpVerified && !isLoading
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-gray-400 text-gray-200 cursor-not-allowed"
             }`}
           >
-            Register
+            {isLoading ? (
+              <div className="animate-spin h-5 w-5 border-2 border-t-transparent border-white rounded-full"></div>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
 

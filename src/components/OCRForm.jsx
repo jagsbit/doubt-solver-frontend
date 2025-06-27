@@ -87,17 +87,26 @@ const OCRForm = ({ onResult, setLoading, setAnswerLoading, setQuestion }) => {
       <label className="block mt-4 mb-2 text-lg font-semibold text-gray-700">
         Choose File
       </label>
+      <label
+        htmlFor="fileInput"
+        className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer text-base font-medium"
+      >
+        📂 Browse Image
+      </label>
       <input
+        id="fileInput"
         ref={fileInputRef}
         type="file"
         accept="image/*"
         onChange={handleFileChange}
-        className="block w-full text-sm text-gray-600 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="hidden"
       />
 
       {imagePreviewUrl && (
         <div className="my-4">
-          <p className="text-lg font-semibold text-gray-700 mb-2">Image Preview:</p>
+          <p className="text-lg font-semibold text-gray-700 mb-2">
+            Image Preview:
+          </p>
           <img
             src={imagePreviewUrl}
             alt="Uploaded Preview"

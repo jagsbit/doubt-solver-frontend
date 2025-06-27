@@ -1,17 +1,27 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // Adjust path as needed
-import { doLogout } from "../auth"; // Handles logout logic (e.g. clearing token)
+import { useAuth } from "../context/AuthContext";
+import { doLogout } from "../auth";
+
+// Import Lucide icons
+import {
+  Home,
+  LogIn,
+  UserPlus,
+  MessageSquare,
+  HelpCircle,
+  LogOut,
+  FileQuestion // Icon for QuizMe
+} from "lucide-react";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-
-  const { isAuthenticated, user, logoutContext } = useAuth();
+  const { isAuthenticated, logoutContext } = useAuth();
 
   const handleLogout = () => {
     doLogout();
-    logoutContext(); // update context
+    logoutContext();
     navigate("/");
   };
 
@@ -30,43 +40,59 @@ const Header = () => {
             DoubtNest.Ai
           </div>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-4 items-center">
-            <NavLink to="/" className={linkClass}>
-              Discover
-            </NavLink>
             {isAuthenticated ? (
               <>
                 <NavLink to="/private/ask-doubt" className={linkClass}>
-                  Ask Doubt
+                  <div className="flex items-center gap-2">
+                    <HelpCircle size={18} /> Ask Doubt
+                  </div>
                 </NavLink>
                 <NavLink to="/private/community" className={linkClass}>
-                  Community
+                  <div className="flex items-center gap-2">
+                    <MessageSquare size={18} /> Community
+                  </div>
                 </NavLink>
-                <NavLink to="/private/quiz-list" className={linkClass}>
-                  Quize Me
-                </NavLink>
-                <NavLink to="/private/user-profile" className={linkClass}>
-                  Profile
+                <NavLink to="/private/quizme-display" className={linkClass}>
+                  <div className="flex items-center gap-2">
+                    <FileQuestion size={18} /> QuizMe
+                    <span className="ml-1 px-2 py-0.5 text-xs font-medium bg-yellow-400 text-yellow-900 rounded-full">
+                      Pro
+                    </span>
+                  </div>
                 </NavLink>
                 <button
                   onClick={handleLogout}
                   className="text-gray-700 hover:bg-blue-100 px-4 py-2 rounded-md transition"
                 >
-                  Logout
+                  <div className="flex items-center gap-2">
+                    <LogOut size={18} /> Logout
+                  </div>
                 </button>
               </>
             ) : (
               <>
+                <NavLink to="/" className={linkClass}>
+                  <div className="flex items-center gap-2">
+                    <Home size={18} /> Discover
+                  </div>
+                </NavLink>
                 <NavLink to="/login" className={linkClass}>
-                  Login
+                  <div className="flex items-center gap-2">
+                    <LogIn size={18} /> Login
+                  </div>
                 </NavLink>
                 <NavLink to="/register" className={linkClass}>
-                  Signup
+                  <div className="flex items-center gap-2">
+                    <UserPlus size={18} /> Signup
+                  </div>
                 </NavLink>
               </>
             )}
           </div>
 
+          {/* Mobile Hamburger */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -78,28 +104,51 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden px-4 pb-3 pt-2 space-y-1 bg-white/90 backdrop-blur-md  shadow-md">
-          <NavLink
-            to="/"
-            className={linkClass}
-            onClick={() => setIsOpen(false)}
-          >
-            Discover
-          </NavLink>
+        <div className="md:hidden px-4 pb-3 pt-2 space-y-1 bg-white/90 backdrop-blur-md shadow-md">
+          {!isAuthenticated && (
+            <NavLink
+              to="/"
+              className={linkClass}
+              onClick={() => setIsOpen(false)}
+            >
+              <div className="flex items-center gap-2">
+                <Home size={18} /> Discover
+              </div>
+            </NavLink>
+          )}
           {isAuthenticated ? (
             <>
-              <NavLink to="/private/ask-doubt" className={linkClass}>
-                Ask Doubt
+              <NavLink
+                to="/private/ask-doubt"
+                className={linkClass}
+                onClick={() => setIsOpen(false)}
+              >
+                <div className="flex items-center gap-2">
+                  <HelpCircle size={18} /> Ask Doubt
+                </div>
               </NavLink>
-              <NavLink to="/private/community" className={linkClass}>
-                Community
+              <NavLink
+                to="/private/community"
+                className={linkClass}
+                onClick={() => setIsOpen(false)}
+              >
+                <div className="flex items-center gap-2">
+                  <MessageSquare size={18} /> Community
+                </div>
               </NavLink>
-              <NavLink to="/private/quiz-list" className={linkClass}>
-                Quize Me
-              </NavLink>
-              <NavLink to="/private/user-profile" className={linkClass}>
-                Profile
+              <NavLink
+                to="/private/quizme-display"
+                className={linkClass}
+                onClick={() => setIsOpen(false)}
+              >
+                <div className="flex items-center gap-2">
+                  <FileQuestion size={18} /> QuizMe
+                  <span className="ml-1 px-2 py-0.5 text-xs font-medium bg-yellow-400 text-yellow-900 rounded-full">
+                    Pro
+                  </span>
+                </div>
               </NavLink>
               <button
                 onClick={() => {
@@ -108,7 +157,9 @@ const Header = () => {
                 }}
                 className="block w-full text-left text-gray-700 hover:bg-blue-100 px-4 py-2 rounded-md"
               >
-                Logout
+                <div className="flex items-center gap-2">
+                  <LogOut size={18} /> Logout
+                </div>
               </button>
             </>
           ) : (
@@ -118,14 +169,18 @@ const Header = () => {
                 className={linkClass}
                 onClick={() => setIsOpen(false)}
               >
-                Login
+                <div className="flex items-center gap-2">
+                  <LogIn size={18} /> Login
+                </div>
               </NavLink>
               <NavLink
                 to="/register"
                 className={linkClass}
                 onClick={() => setIsOpen(false)}
               >
-                Signup
+                <div className="flex items-center gap-2">
+                  <UserPlus size={18} /> Signup
+                </div>
               </NavLink>
             </>
           )}

@@ -12,12 +12,14 @@ import Home from "./components/Home.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
-import Profile from "./components/user-routes/Profile.jsx";
 import AskDoubt from "./components/AskDoubt.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import QuizeMe from "./components/user-routes/QuizeMe.jsx";
 import Community from "./components/user-routes/Community.jsx";
 import QuizList from "./components/user-routes/QuizList.jsx";
+import AskDoubtDisplay from "./components/user-routes/AskDoubtDisplay.jsx";
+import QuizeMeDisplay from "./components/user-routes/QuizeMeDisplay.jsx";
+ 
 
 const router = createBrowserRouter([
   {
@@ -36,10 +38,7 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />,
       },
-      {
-        path: "ask-doubt",
-        element: <AskDoubt />,
-      },
+      
       {
         path: "private",
         element: <PrivateRoute />,
@@ -64,15 +63,14 @@ const router = createBrowserRouter([
             path: "community/:catId",
             element: <Community />,
           },
-
           {
-            path: "user-profile", // <--- for logged-in user
-            element: <Profile />,
-          },
-          {
-            path: "user-profile/:userId", // <--- for public profile
-            element: <Profile />,
-          },
+            path:"askdoubt-display",
+            element:<AskDoubtDisplay/>
+          }
+          ,{
+            path:"quizme-display",
+            element:<QuizeMeDisplay/>
+          }
         ],
       },
     ],

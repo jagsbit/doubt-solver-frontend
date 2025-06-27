@@ -7,38 +7,31 @@ import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { loginContext } = useAuth(); // context for updating global login state
+  const { loginContext } = useAuth();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
-     e.preventDefault();
+    e.preventDefault();
+    setIsLoading(true);
 
-    // Call API
     login(formData)
       .then((jwtToken) => {
-        // Save token to localStorage
-        //console.log(jwtToken.user)
         doLogin(jwtToken, () => {
-         loginContext(jwtToken.user); // notify context about login
-         // toast.success("Logged in successfully!");
-          navigate("/private/ask-doubt");
+          loginContext(jwtToken.user);
+          navigate("/private/askdoubt-display");
         });
       })
       .catch((error) => {
         console.log("Login error:", error);
         toast.error("Invalid credentials. Please try again.");
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -61,6 +54,7 @@ const Login = () => {
               className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Password
@@ -74,13 +68,24 @@ const Login = () => {
               className="mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            disabled={isLoading}
+            className={`w-full flex items-center justify-center py-2 rounded-md transition ${
+              isLoading
+                ? "bg-blue-600 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            }`}
           >
-            Login
+            {isLoading ? (
+              <div className="animate-spin h-6 w-6 border-4 border-t-transparent border-white rounded-full"></div>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
+
         <p className="mt-4 text-sm text-center text-gray-600">
           Don't have an account?{" "}
           <Link to="/register" className="text-blue-600 hover:underline">
