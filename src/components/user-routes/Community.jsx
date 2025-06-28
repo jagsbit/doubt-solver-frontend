@@ -36,20 +36,21 @@ const Community = () => {
   const [commentLoading, setCommentLoading] = useState({});
 
   useEffect(() => {
-    setLoading(true);
-    getAllDoubt(currentPage, catId)
-      .then((res) => {
-        setData(res);
-         window.scroll(0, 0);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Failed to load the doubts");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [currentPage, catId, commentTexts]);
+  setLoading(true);
+  getAllDoubt(currentPage, catId)
+    .then((res) => {
+      setData(res);
+      window.scroll(0, 0);
+    })
+    .catch((error) => {
+      console.error(error);
+      toast.error("Failed to load the doubts");
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}, [currentPage, catId]);  
+
 
   const goToPage = (page) => setSearchParams({ pageNumber: page });
 
