@@ -73,10 +73,10 @@ export default function Pricing() {
           <div className="bg-white rounded-xl shadow p-6 flex flex-col justify-between w-full max-w-xs">
             <div>
               <h3 className="text-xl font-semibold">Basic</h3>
-              <p className="text-3xl font-bold mt-2">Free</p>
-              <p className="text-gray-500 text-sm mb-4">3-month trial</p>
+              <p className="text-3xl font-bold mt-2 mb-7">Free</p>
+              
               <ul className="text-left space-y-2 text-sm text-gray-700">
-                <li>✅ 20 questions per day</li>
+                <li>✅ 100 Free Doubts</li>
                 <li>✅ Peer communication</li>
                 <li>✅ Text questions only</li>
               </ul>
@@ -96,24 +96,48 @@ export default function Pricing() {
             </span>
             <div>
               <h3 className="text-xl font-semibold">Standard</h3>
-              <p className="text-3xl font-bold mt-2">
+              <p className="text-3xl font-bold mt-2 mb-8">
                 ₹99
                 <span className="text-base font-medium"> one-time payment</span>
               </p>
-              <p className="text-gray-500 text-sm mb-4">
-                Lifetime access — no recurring fees
-              </p>
+              
               <ul className="text-left space-y-2 text-sm text-gray-700">
-                <li>✅ Unlimited questions</li>
+                <li>✅ Unlimited Doubts</li>
                 <li>✅ Peer communication</li>
                 <li>✅ AI Powered Quiz</li>
               </ul>
             </div>
             <button
               onClick={handleBuy}
-              className="mt-6 bg-pink-500 text-white font-medium py-2 px-4 rounded hover:bg-pink-600 transition"
               disabled={loading}
+              className={`mt-6 flex items-center justify-center min-w-[140px] px-4 py-2 rounded transition font-medium ${
+                loading
+                  ? "bg-pink-400 text-white cursor-not-allowed"
+                  : "bg-pink-500 hover:bg-pink-600 text-white"
+              }`}
             >
+              {loading && (
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+              )}
               {loading ? "Processing..." : "Choose Plan"}
             </button>
           </div>

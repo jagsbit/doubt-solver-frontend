@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getQuiz } from "../../services/ai-service";
 import { useParams } from "react-router-dom";
 import { getDoubtById } from "../../services/doubt-service";
+import Spinner from "../Spinner";
 
 const QuizeMe = () => {
   const [quizData, setQuizData] = useState([]);
@@ -49,9 +50,7 @@ const QuizeMe = () => {
   return (
     <div className="p-4 max-w-2xl mx-auto space-y-4">
       {loading && (
-        <div className="text-center mt-8 text-gray-500 space-y-2 text-2xl font-semibold">
-          ⏳ Loading questions...
-        </div>
+        <Spinner text={"Loading questions..."}/>
       )}
 
       {/* Questions */}

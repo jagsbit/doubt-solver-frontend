@@ -214,17 +214,35 @@ const Register = () => {
           <button
             type="submit"
             disabled={!isOtpVerified || isLoading}
-            className={`w-full py-2 rounded-md transition flex items-center justify-center ${
+            className={`w-full py-2 rounded-md transition flex items-center justify-center min-w-[120px] ${
               isOtpVerified && !isLoading
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-gray-400 text-gray-200 cursor-not-allowed"
             }`}
           >
-            {isLoading ? (
-              <div className="animate-spin h-5 w-5 border-2 border-t-transparent border-white rounded-full"></div>
-            ) : (
-              "Register"
+            {isLoading && (
+              <svg
+                className="animate-spin h-5 w-5 mr-2 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
             )}
+            {isLoading ? "Registering..." : "Register"}
           </button>
         </form>
 

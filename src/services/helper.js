@@ -1,7 +1,9 @@
 import axios from "axios";
 import { getToken } from "../auth";
 
-export const BASE_URL='http://localhost:5000'; // local host 
+//export const BASE_URL='http://localhost:5000'; // local host 
+export const BASE_URL='https://doubt-solver-backend.onrender.com'; 
+
 
 
 export const myAxios=axios.create({

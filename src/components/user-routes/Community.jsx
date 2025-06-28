@@ -27,21 +27,27 @@ const Community = () => {
     totalPages: 0,
     lastPage: false,
   });
+  const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("pageNumber")) || 0;
   const user = getUser();
   const [readMoreStates, setReadMoreStates] = useState({});
   const [commentTexts, setCommentTexts] = useState({});
+  const [commentLoading, setCommentLoading] = useState({});
 
   useEffect(() => {
+    setLoading(true);
     getAllDoubt(currentPage, catId)
       .then((res) => {
         setData(res);
-        //console.log(res);
+         window.scroll(0, 0);
       })
       .catch((error) => {
         console.error(error);
         toast.error("Failed to load the doubts");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [currentPage, catId, commentTexts]);
 
@@ -54,6 +60,9 @@ const Community = () => {
   const handleComment = (doubtId) => {
     const comment = commentTexts[doubtId] || "";
     if (!comment.trim()) return toast.warning("Comment cannot be empty!");
+
+    setCommentLoading((prev) => ({ ...prev, [doubtId]: true }));
+
     const commentdto = {
       content: comment,
       createdAt: new Date().toISOString(),
@@ -65,7 +74,6 @@ const Community = () => {
           toast.error("Your comment is irrelevant");
         } else {
           toast.info("Comment added successfully");
-
           setData((prevData) => {
             const updatedContent = prevData.content.map((doubt) => {
               if (doubt.doubtId === doubtId) {
@@ -82,19 +90,22 @@ const Community = () => {
       })
       .catch((error) => {
         console.error(error);
+        toast.error("Failed to add comment");
+      })
+      .finally(() => {
+        setCommentTexts((prev) => ({ ...prev, [doubtId]: "" }));
+        setCommentLoading((prev) => ({ ...prev, [doubtId]: false }));
       });
-
-    setCommentTexts((prev) => ({ ...prev, [doubtId]: "" }));
   };
+
   const handleUpvoteComment = (doubtId, commentId) => {
     upVote(commentId, user?.userId)
-      .then((updatedComment) => {
+      .then(() => {
         toast.info("Comment upvoted successfully!");
-        // Re-fetch the data so all comment upvotes are up to date
         return getAllDoubt(currentPage, catId);
       })
       .then((res) => {
-        setData(res); // Set the new data with updated upvotes
+        setData(res);
       })
       .catch((error) => {
         console.error(error);
@@ -108,7 +119,33 @@ const Community = () => {
         <CategoryNav />
 
         <div className="flex-1 flex flex-col gap-8">
-          {data.content.length === 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center min-h-[60vh]">
+              <div className="flex flex-col items-center space-y-4">
+                <svg
+                  className="animate-spin h-10 w-10 text-blue-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+                <p className="text-gray-600 text-lg">Loading doubts...</p>
+              </div>
+            </div>
+          ) : data.content.length === 0 ? (
             <div className="text-center text-xl text-gray-600 mt-10">
               No doubts yet.
             </div>
@@ -125,7 +162,6 @@ const Community = () => {
                   className="bg-white shadow-lg rounded-xl p-6 space-y-4"
                 >
                   {/* Title */}
-
                   <div className="flex items-center gap-2 mb-2">
                     {doubt.user?.profilePic ? (
                       <img
@@ -226,10 +262,35 @@ const Community = () => {
                         rows={2}
                       />
                       <button
-                        className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                        className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-center min-w-[120px]"
                         onClick={() => handleComment(doubt.doubtId)}
+                        disabled={commentLoading[doubt.doubtId]}
                       >
-                        Submit Comment
+                        {commentLoading[doubt.doubtId] ? (
+                          <svg
+                            className="animate-spin h-5 w-5 mr-2 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v8H4z"
+                            ></path>
+                          </svg>
+                        ) : null}
+                        {commentLoading[doubt.doubtId]
+                          ? "Submitting..."
+                          : "Submit Comment"}
                       </button>
                     </div>
                   ) : (
@@ -250,7 +311,7 @@ const Community = () => {
           )}
 
           {/* Pagination */}
-          {data.totalPages > 1 && (
+          {data.totalPages > 1 && !loading && (
             <div className="mt-10 flex justify-center space-x-2">
               <button
                 onClick={() => goToPage(currentPage - 1)}
